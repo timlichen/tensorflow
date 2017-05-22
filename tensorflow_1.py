@@ -48,3 +48,39 @@ print(sess.run(adder_node, {a: [1, 3], b: [2, 4]}))
 
 add_and_triple = adder_node * 3
 print(sess.run(add_and_triple, {a: 3, b: 4.5}))
+
+# typically in ML, we will want a model that can take arbitrary inputs, like above. To make the model trainable, we need to be able to modify the graph to get new outputs with the same inputs. Variables allows us to add trainable parameters to a graph. They are constructed with a type and initial value.
+
+W = tf.Variable([.3], tf.float32)
+b = tf.Variable([-.3], tf.float32)
+x = tf.placeholder(tf.float32)
+
+linear_model = W * x + b
+
+# constants are initialized when tf.constant is called, but tf.Variable needs special methods to initialize. You must explicity call a special operation.
+
+init = tf.global_variables_initializer()
+sess.run(init) # init is a handle to the TensorFlow sub-graph that inits all the global variables. Until we call sess.run, the variables are uninitialized.
+
+print(sess.run(linear_model, {x:[1,2,3,4]}))
+#=> [ 0.          0.30000001  0.60000002  0.90000004]
+
+'''
+Not bad, but we don't know how good it is yet. To evaluate the model on the traning data, we need a y placeholder to provide the desired values, and we need to write a loss function.
+
+wtf is a loss function? It's a function that measures how far apart the current model is from the provided data. We'll use a standard loss model for linear regression, which sums the squares of the deltas between the current model and the provided data.
+
+linear_model - y
+
+create a vector where each element is the corresponding example's error delta. We call tf.square to square that error. Then we sum all the squared errors to create a single scalar that abstracts the erro of all examples using tf.reduce_sum:
+'''
+
+y = tf.placeholder(tf.float32)
+# squared_deltas = tf.square(linear_model - y)
+non_squared_deltas = linear_model - y
+
+# print(sess.run(squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+print(sess.run(non_squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+
+# loss = tf.reduce_sum(squared_deltas)
+print(sess.run(loss, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
