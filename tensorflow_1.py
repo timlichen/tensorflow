@@ -92,3 +92,28 @@ print(sess.run(squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
 loss = tf.reduce_sum(squared_deltas)
 print(sess.run(loss, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
 #  23.66
+
+# To improve the loss score, we can manually reassign the values of W and b to the perfect values, -1 and 1. A variable is init'ed with tf.Variable, but it can be changed using operators like tf.assign, like so:
+
+fixW = tf.assign(W, [-1.])
+fixb = tf.assign(b, [1.])
+sess.run([fixW, fixb])
+print(sess.run(loss,{x: [1,2,3,4], y:[0,-1,-2,-3]}))
+# 0.0
+
+# Gussing or calculating the perfect values of W and b is great, but the whole point of the ML is to find the correct model parameters automatically. We will show how to accomplish this in the next section.
+
+# tf.Train API
+
+# TensorFlow provides optimizers that slowly change each variable in rder to minimize the loss function. THe simplest optimizer is gradient descent. It modifies each variable according to the magnitude of the derivative (a measurement of an output values, in this case the loss, with respect to a change in its argument, input values, in this case W and b). In general, computing symbolic derivatives manually is tedious and error-prone. COnsequently, TensorFlow can automatically produce derivatives given on a description of the model using the function tf.gradients. Simply, optimizers typically do this for you.
+
+optimizer = tf.train.GradientDescentOptimizer(0.01)
+train = optimizer.minimize(loss)
+
+sess.run(init) # reset values to incorect defualts.
+for i in range(1000):
+    sess.run(train, {x:[1,2,3,4], y: [0,-1,-2,-3]})
+
+print(sess.run([W, b]))
+
+# This is Machine Learning! This simple linear linear regression doesn't require much TensorFlow core code, more complicated models and methods to feed data into you model will necessitate more code. TF provides higher level abstractios for common patterns, structures, and functionality.
