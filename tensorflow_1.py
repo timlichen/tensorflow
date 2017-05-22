@@ -72,15 +72,23 @@ wtf is a loss function? It's a function that measures how far apart the current 
 
 linear_model - y
 
-create a vector where each element is the corresponding example's error delta. We call tf.square to square that error. Then we sum all the squared errors to create a single scalar that abstracts the erro of all examples using tf.reduce_sum:
+create a vector where each element is the corresponding example's error delta. We call tf.square to square that error. Then we sum all the squared errors to create a single scalar that abstracts the error of all examples using tf.reduce_sum:
 '''
 
+
 y = tf.placeholder(tf.float32)
-# squared_deltas = tf.square(linear_model - y)
-non_squared_deltas = linear_model - y
 
-# print(sess.run(squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
-print(sess.run(non_squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+deltas = linear_model - y
 
-# loss = tf.reduce_sum(squared_deltas)
+print(sess.run(deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+# [ 0.          1.29999995  2.5999999   3.9000001 ]
+# Taking each element of the linear model list and subtracting the correlating indexs element from y (the provided data) and populating the list, eg.
+# [ 0 - 0, 0.3-(-1), .6-(-2), ... ]
+
+squared_deltas = tf.square(linear_model - y)
+print(sess.run(squared_deltas, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+# [  0.           1.68999982   6.75999928  15.21000099]
+
+loss = tf.reduce_sum(squared_deltas)
 print(sess.run(loss, {x:[1,2,3,4], y: [0,-1,-2,-3]}))
+#  23.66
