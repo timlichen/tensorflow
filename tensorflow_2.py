@@ -17,7 +17,7 @@ loss = tf.reduce_sum(tf.square(linear_model - y)) # sum of the squares
 
 # optimizers
 
-optimizer = tf.trainGradientDescentOptimizer(0.01)
+optimizer = tf.train.GradientDescentOptimizer(0.01)
 train = optimizer.minimize(loss)
 
 # training data
@@ -26,10 +26,10 @@ y_train = [0,-1,-2,-3]
 
 # training loop
 
-init = tf.global_varaibles_initializer()
+init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init) # reset values to wrong
-for in in range(1000):
+for i in range(1000):
     sess.run(train, {x: x_train, y: y_train})
 
 # evaluate training accuracy
